@@ -1215,7 +1215,7 @@ function changescale(s, fullscreen)
 		love.window.setMode(0, 0, {fullscreen=fullscreen, vsync=vsync})
 	end 
 	
-	if love.window.getFullscreen()
+	if love.window.getFullscreen() then
 		scale = love.graphics.getHeight()/224
 	else
 		love.window.setMode(width*16*scale, 224*scale, {fullscreen=fullscreen, vsync=vsync}) --27x14 blocks (15 blocks actual height)

@@ -17,7 +17,7 @@ function menu_load()
 	checkpointx = false
 	love.graphics.setBackgroundColor(backgroundcolor[1])
 
-	controlstable = {"left", "right", "up", "down", "run", "jump", "reload", "use", "aimx", "aimy", "portal1", "portal2"}
+	controlstable = {"left", "right", "up", "down", "run", "jump", "reload", "use", "pause", "aimx", "aimy", "portal1", "portal2"}
 
 	portalanimation = 1
 	portalanimationtimer = 0
@@ -372,7 +372,7 @@ function menu_draw()
 	elseif gamestate == "mappackmenu" then
 		--background
 		love.graphics.setColor(0, 0, 0, 0.2)
-		love.graphics.rectangle("fill", 21*scale, 16*scale, 218*scale, 200*scale)
+		love.graphics.rectangle("fill", 21*scale, 16*scale, 218*scale, 234*scale)
 		love.graphics.setColor(1, 1, 1, 1)
 
 		--set scissor
@@ -380,7 +380,7 @@ function menu_draw()
 
 		if loadingonlinemappacks then
 			love.graphics.setColor(0, 0, 0, 0.8)
-			love.graphics.rectangle("fill", 21*scale, 16*scale, 218*scale, 200*scale)
+			love.graphics.rectangle("fill", 21*scale, 16*scale, 218*scale, 234*scale)
 			love.graphics.setColor(1, 1, 1, 1)
 			properprint("a little patience..|downloading " .. currentdownload .. " of " .. downloadcount, 50*scale, 30*scale)
 			drawrectangle(50, 55, 152, 10)
@@ -683,7 +683,7 @@ function menu_draw()
 			end
 
 			for i = 1, #controlstable do
-				if mouseowner ~= skinningplayer or i <= 8 then
+				if mouseowner ~= skinningplayer or i <= 9 then
 					if optionsselection == 3+i then
 						love.graphics.setColor(1, 1, 1, 1)
 					else
@@ -1761,13 +1761,13 @@ function menu_keypressed(key, unicode)
 		elseif (key == "down" or key == "s") then
 			if optionstab == 1 then
 				if skinningplayer ~= mouseowner then
-					if optionsselection < 15 then
+					if optionsselection < 16 then
 						optionsselection = optionsselection + 1
 					else
 						optionsselection = 1
 					end
 				else
-					if optionsselection < 11 then
+					if optionsselection < 12 then
 						optionsselection = optionsselection + 1
 					else
 						optionsselection = 1
@@ -1798,9 +1798,9 @@ function menu_keypressed(key, unicode)
 			else
 				if optionstab == 1 then
 					if skinningplayer ~= mouseowner then
-						optionsselection = 15
+						optionsselection = 16
 					else
-						optionsselection = 11
+						optionsselection = 12
 					end
 				elseif optionstab == 2 then
 					optionsselection = 14
@@ -2037,7 +2037,19 @@ function menu_mousereleased(x, y, button)
 end
 
 function menu_joystickpressed(joystick, button)
-
+	if (button==1 or button=="a") then
+		menu_keypressed("enter", nil)
+	elseif (button==2) then
+		menu_keypressed("escape", nil)
+	elseif (button==12) then
+		menu_keypressed("w", nil)
+	elseif (button==13) then
+		menu_keypressed("s", nil)
+	elseif (button==14) then
+		menu_keypressed("a", nil)
+	elseif (button==15) then
+		menu_keypressed("d", nil)
+	end
 end
 
 function menu_joystickreleased(joystick, button)
@@ -2049,7 +2061,17 @@ function menu_joystickaxis(joystick, axis, value, stickmoved, shouldermoved)
 end
 
 function menu_joystickhat(joystick, hat, direction)
-
+	if keyprompt then
+		return
+	elseif (direction=="u") then
+		menu_keypressed("w", nil)
+	elseif (direction =="d") then
+		menu_keypressed("s", nil)
+	elseif (direction =="l") then
+		menu_keypressed("a", nil)
+	elseif (direction =="r") then
+		menu_keypressed("d", nil)
+	end
 end
 
 function keypromptenter(t, ...)

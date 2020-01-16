@@ -1212,15 +1212,23 @@ function changescale(s, fullscreen)
 
 	if fullscreen then
 		fullscreen = true
-		scale = 2
-		love.window.setMode(800, 600, {fullscreen=fullscreen, vsync=vsync})
+		love.window.setMode(0, 0, {fullscreen=fullscreen, vsync=vsync})
+	end 
+	
+	if love.window.getFullscreen()
+		scale = love.graphics.getHeight()/224
+	else
+		love.window.setMode(width*16*scale, 224*scale, {fullscreen=fullscreen, vsync=vsync}) --27x14 blocks (15 blocks actual height)
 	end
-
-	uispace = math.floor(width*16*scale/4)
-	love.window.setMode(width*16*scale, 224*scale, {fullscreen=fullscreen, vsync=vsync}) --27x14 blocks (15 blocks actual height)
 
 	gamewidth = love.graphics.getWidth()
 	gameheight = love.graphics.getHeight()
+	
+	if love.window.getFullscreen() then
+		width = math.ceil(gamewidth/(16*scale))
+	end
+	
+	uispace = math.floor(width*16*scale/4)
 
 	if shaders then
 		shaders:refresh()

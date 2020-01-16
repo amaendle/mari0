@@ -3685,6 +3685,10 @@ function traceline(sourcex, sourcey, radians)
 end
 
 function spawnenemy(x, y)
+	--make sure x and y are integers (happens when scale is not an integer) 
+	x=math.floor(x+0.5) 
+	y=math.floor(y+0.5)
+	
 	if not inmap(x, y) then
 		return
 	end
@@ -3919,6 +3923,11 @@ end
 
 function game_joystickpressed( joystick, button )
 	if pausemenuopen then
+		if (button==1) then
+			game_keypressed("return",nil)
+		elseif (button==2) then
+			game_keypressed("escape",nil)
+		end
 		return
 	end
 	if endpressbutton then
@@ -3934,6 +3943,7 @@ function game_joystickpressed( joystick, button )
 			local s4 = controls[i]["use"]
 			local s5 = controls[i]["left"]
 			local s6 = controls[i]["right"]
+			local s7 = controls[i]["pause"]
 			if s1[1] == "joy" and joystick == tonumber(s1[2]) and s1[3] == "but" and button == tonumber(s1[4]) then
 				objects["player"][i]:jump()
 				return
@@ -3951,6 +3961,9 @@ function game_joystickpressed( joystick, button )
 				return
 			elseif s6[1] == "joy" and joystick == s6[2] and s6[3] == "but" and button == s6[4] then
 				objects["player"][i]:rightkey()
+				return
+			elseif s7[1] == "joy" and joystick == s7[2] and s7[3] == "but" and button == s7[4] then
+				game_keypressed("escape",nil)
 				return
 			end
 
@@ -4037,6 +4050,15 @@ function game_joystickaxis(joystick, axis, value, stickmoved, shouldermoved)
 end
 function game_joystickhat(joystick, hat, direction)
 	if pausemenuopen then
+		if (direction=="u") then
+			game_keypressed("w",nil)
+		elseif (direction=="d") then
+			game_keypressed("s",nil)
+		elseif (direction=="l") then
+			game_keypressed("a",nil)
+		elseif (direction=="r") then
+			game_keypressed("d",nil)
+		end
 		return
 	end
 	if endpressbutton then

@@ -1210,16 +1210,20 @@ end
 function changescale(s, fullscreen)
 	scale = s
 
-	if fullscreen then
-		fullscreen = true
+	--if fullscreen then
+	--	fullscreen = true
 		love.window.setMode(0, 0, {fullscreen=fullscreen, vsync=vsync})
-	end 
-	
-	if love.window.getFullscreen() then
-		scale = love.graphics.getHeight()/224
-	else
-		love.window.setMode(width*16*scale, 224*scale, {fullscreen=fullscreen, vsync=vsync}) --27x14 blocks (15 blocks actual height)
+	--end 
+	if (fullscreen==false) then
+	love.window.setMode(width*16*scale, 224*scale, {fullscreen=fullscreen, vsync=vsync}) --27x14 blocks (15 blocks actual height)
 	end
+	scale = love.graphics.getHeight()/224
+	
+	--if love.window.getFullscreen() then
+		--scale = love.graphics.getHeight()/224
+	--else
+		--love.window.setMode(width*16*scale, 224*scale, {fullscreen=fullscreen, vsync=vsync}) --27x14 blocks (15 blocks actual height)
+	--end
 
 	gamewidth = love.graphics.getWidth()
 	gameheight = love.graphics.getHeight()
@@ -1346,11 +1350,15 @@ function love.joystickpressed(joystick, button)
 		return
 	end
 
-	if gamestate == "menu" or gamestate == "options" then
+	if gamestate == "menu" or gamestate == "mappackmenu" or gamestate == "onlinemenu" or gamestate == "options" then
 		menu_joystickpressed(joystick:getID(), button)
 	elseif gamestate == "game" then
 		game_joystickpressed(joystick:getID(), button)
+	elseif gamestate == "intro" then
+		intro_keypressed()
 	end
+	
+	
 end
 
 function love.joystickreleased(joystick, button)
@@ -1388,7 +1396,7 @@ function love.joystickaxis(joystick, axis, value)
 		elseif value < 0 and not axisDeadZones[joystick][axis]["shoulder"] then
 			axisDeadZones[joystick][axis]["shoulder"] = true
 		end
-		if gamestate == "menu" or gamestate == "options" then
+		if gamestate == "menu" or gamestate == "mappackmenu" or gamestate == "onlinemenu" or gamestate == "options" then
 			menu_joystickaxis(joystick, axis, value, stickmoved, shouldermoved)
 		elseif gamestate == "game" then
 			game_joystickaxis(joystick, axis, value, stickmoved, shouldermoved)
@@ -1405,7 +1413,7 @@ function love.joystickhat(joystick, hat, direction)
 	end
 
 	if found then
-		if gamestate == "menu" or gamestate == "options" then
+		if gamestate == "menu" or gamestate == "mappackmenu" or gamestate == "onlinemenu" or gamestate == "options" then
 			menu_joystickhat(joystick, hat, direction)
 		elseif gamestate == "game" then
 			game_joystickhat(joystick, hat, direction)

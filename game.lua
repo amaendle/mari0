@@ -3925,8 +3925,16 @@ function game_joystickpressed( joystick, button )
 	if pausemenuopen then
 		if (button==1) then
 			game_keypressed("return",nil)
-		elseif (button==2) then
-			game_keypressed("escape",nil)
+		elseif (button==2 or button==5) then
+			game_keypressed("escape", nil)
+		elseif (button==12) then
+			game_keypressed("w", nil)
+		elseif (button==13) then
+			game_keypressed("s", nil)
+		elseif (button==14) then
+			game_keypressed("a", nil)
+		elseif (button==15) then
+			game_keypressed("d", nil)
 		end
 		return
 	end

@@ -123,17 +123,31 @@ function menu_update(dt)
 		while infmarioR > math.pi*2 do
 			infmarioR = infmarioR - math.pi*2
 		end
+		
+		local direction = ""
+		local joysticks = love.joystick.getJoysticks()
+		for i, joystick in ipairs(joysticks) do
+			if joystick:isDown("12") or joystick:getHat(1)=="d" then
+				direction = "u"
+			elseif joystick:isDown("13") or joystick:getHat(1)=="d" then
+				direction = "d"
+			elseif joystick:isDown("14") or joystick:getHat(1)=="d" then
+				direction = "l"
+			elseif joystick:isDown("15") or joystick:getHat(1)=="d" then
+				direction = "r"
+			end
+		end
 
 		if optionsselection > 3 and optionsselection < 13 then
 			local colornumber = math.floor((optionsselection-1)/3)
 			local colorRGB = math.fmod(optionsselection-4, 3)+1
 
-			if love.keyboard.isDown("right") and mariocolors[skinningplayer][colornumber][colorRGB] < 1 then
+			if (love.keyboard.isDown("right") or direction=="r") and mariocolors[skinningplayer][colornumber][colorRGB] < 1 then
 				mariocolors[skinningplayer][colornumber][colorRGB] = mariocolors[skinningplayer][colornumber][colorRGB] + RGBchangespeed*dt
 				if mariocolors[skinningplayer][colornumber][colorRGB] > 1 then
 					mariocolors[skinningplayer][colornumber][colorRGB] = 1
 				end
-			elseif love.keyboard.isDown("left") and mariocolors[skinningplayer][colornumber][colorRGB] > 0 then
+			elseif (love.keyboard.isDown("left") or direction=="l") and mariocolors[skinningplayer][colornumber][colorRGB] > 0 then
 				mariocolors[skinningplayer][colornumber][colorRGB] = mariocolors[skinningplayer][colornumber][colorRGB] - RGBchangespeed*dt
 				if mariocolors[skinningplayer][colornumber][colorRGB] < 0 then
 					mariocolors[skinningplayer][colornumber][colorRGB] = 0
@@ -141,14 +155,14 @@ function menu_update(dt)
 			end
 
 		elseif optionsselection == 13 then
-			if love.keyboard.isDown("right") and portalhues[skinningplayer][1] < 1 then
+			if (love.keyboard.isDown("right") or direction=="r") and portalhues[skinningplayer][1] < 1 then
 				portalhues[skinningplayer][1] = portalhues[skinningplayer][1] + huechangespeed*dt
 				if portalhues[skinningplayer][1] > 1 then
 					portalhues[skinningplayer][1] = 1
 				end
 				portalcolor[skinningplayer][1] = getrainbowcolor(portalhues[skinningplayer][1])
 
-			elseif love.keyboard.isDown("left") and portalhues[skinningplayer][1] > 0 then
+			elseif (love.keyboard.isDown("left") or direction=="l") and portalhues[skinningplayer][1] > 0 then
 				portalhues[skinningplayer][1] = portalhues[skinningplayer][1] - huechangespeed*dt
 				if portalhues[skinningplayer][1] < 0 then
 					portalhues[skinningplayer][1] = 0
@@ -157,14 +171,14 @@ function menu_update(dt)
 			end
 
 		elseif optionsselection == 14 then
-			if love.keyboard.isDown("right") and portalhues[skinningplayer][2] < 1 then
+			if (love.keyboard.isDown("right") or direction=="r") and portalhues[skinningplayer][2] < 1 then
 				portalhues[skinningplayer][2] = portalhues[skinningplayer][2] + huechangespeed*dt
 				if portalhues[skinningplayer][2] > 1 then
 					portalhues[skinningplayer][2] = 1
 				end
 				portalcolor[skinningplayer][2] = getrainbowcolor(portalhues[skinningplayer][2])
 
-			elseif love.keyboard.isDown("left") and portalhues[skinningplayer][2] > 0 then
+			elseif (love.keyboard.isDown("left") or direction=="l") and portalhues[skinningplayer][2] > 0 then
 				portalhues[skinningplayer][2] = portalhues[skinningplayer][2] - huechangespeed*dt
 				if portalhues[skinningplayer][2] < 0 then
 					portalhues[skinningplayer][2] = 0
@@ -380,7 +394,7 @@ function menu_draw()
 
 		if loadingonlinemappacks then
 			love.graphics.setColor(0, 0, 0, 0.8)
-			love.graphics.rectangle("fill", 21*scale, 16*scale, 218*scale, 234*scale)
+			love.graphics.rectangle("fill", 21*scale, 16*scale, 218*scale, 200*scale)
 			love.graphics.setColor(1, 1, 1, 1)
 			properprint("a little patience..|downloading " .. currentdownload .. " of " .. downloadcount, 50*scale, 30*scale)
 			drawrectangle(50, 55, 152, 10)
@@ -603,7 +617,7 @@ function menu_draw()
 		end
 	elseif gamestate == "options" then
 		love.graphics.setColor(0, 0, 0, 0.8)
-		love.graphics.rectangle("fill", 21*scale, 16*scale, 218*scale, 200*scale)
+		love.graphics.rectangle("fill", 21*scale, 16*scale, 218*scale, 234*scale)
 
 		--Controls tab head
 		if optionstab == 1 then
@@ -683,7 +697,7 @@ function menu_draw()
 			end
 
 			for i = 1, #controlstable do
-				if mouseowner ~= skinningplayer or i <= 9 then
+				if mouseowner ~= skinningplayer or i <= 8 then
 					if optionsselection == 3+i then
 						love.graphics.setColor(1, 1, 1, 1)
 					else
@@ -2037,9 +2051,12 @@ function menu_mousereleased(x, y, button)
 end
 
 function menu_joystickpressed(joystick, button)
-	if (button==1 or button=="a") then
+-- up down left right for android gamepads in buttons 12-15
+	if keyprompt then
+		return
+	elseif (button==1 or button=="a") then
 		menu_keypressed("enter", nil)
-	elseif (button==2) then
+	elseif (button==2 or button==5) then
 		menu_keypressed("escape", nil)
 	elseif (button==12) then
 		menu_keypressed("w", nil)
